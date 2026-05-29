@@ -1,0 +1,9 @@
+{
+	"url": "https://www.cineby.sc/",
+	"uses_cloudflare": false,
+	"specification": {
+		"type": "index",
+		"wait_time": 5,
+		"retries": 4
+	}
+}
