@@ -5,9 +5,9 @@ A central collection of all supported [freemediaheckyeah](https://fmhy.net/video
 ## How this works
 
 This repository contains indexer specifications for multiple [freemediaheckyeah](https://fmhy.net/video) sites and is expanding with each release.  
-The indexer specification files are under the `vX.X.X` folder corresponding with that version of [FMHY-Downloader](https://github.com/VOD-Downloaders/FMHY-Downloader). This way of saving specifications allows for better backwards compatibility.
+The indexer specification files are under the `vX.X` folder corresponding with that version of [FMHY-Downloader](https://github.com/VOD-Downloaders/FMHY-Downloader). This way of saving specifications allows for better backwards compatibility.
 
-Latest indexers: [`v0.1.0`](./v0.1.0)
+Latest indexers: [`v0.1`](./v0.1)
 
 ## Contributing
 
