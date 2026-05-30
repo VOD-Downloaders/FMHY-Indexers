@@ -1,7 +1,9 @@
 {
+	"name": "Cineby.sc",
 	"url": "https://www.cineby.sc/",
+	"mirrors": ["https://www.bitcine.tv/", "https://www.fmovies.gd/"]
 	"uses_cloudflare": false,
-	"specification": {
+	"download": {
 		"type": "index",
 		"wait_time": 5,
 		"retries": 4
