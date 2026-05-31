@@ -1,0 +1,11 @@
+{
+	"name": "Aether.bar",
+	"url": "https://www.aether.bar/",
+	"mirrors": ["https://www.aether.cx/"],
+	"uses_cloudflare": false,
+	"download": {
+		"type": "master",
+		"wait_time": 5,
+		"retries": 3
+	}
+}
