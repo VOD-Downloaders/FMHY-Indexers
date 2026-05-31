@@ -4,8 +4,13 @@
 	"mirrors": ["https://www.bitcine.tv/", "https://www.fmovies.gd/"],
 	"uses_cloudflare": false,
 	"download": {
-		"type": "index",
-		"wait_time": 6,
-		"retries": 5
+		"preprocessing": {
+			"remove_bytes": 0
+		},
+		"method": {
+			"type": "index",
+			"wait_time": 6,
+			"retries": 5
+		}
 	}
 }
