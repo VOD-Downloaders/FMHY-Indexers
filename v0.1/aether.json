@@ -1,5 +1,5 @@
 {
-	"name": "Aether.bar",
+	"name": "Aether",
 	"url": "https://www.aether.bar/",
 	"mirrors": ["https://www.aether.cx/"],
 	"uses_cloudflare": false,
