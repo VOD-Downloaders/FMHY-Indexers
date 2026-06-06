@@ -1,11 +1,19 @@
 {
-	"name": "Cineby.sc",
-	"url": "https://www.cineby.sc/",
-	"mirrors": ["https://www.bitcine.tv/", "https://www.fmovies.gd/"],
+	"name": "Cineby",
+	"url": "https://www.cineby.at/",
+	"mirrors": ["https://www.cineplay.to/", "https://www.fmovies.nz/"],
 	"uses_cloudflare": false,
 	"download": {
-		"preprocessing": {
-			"remove_bytes": 0
+		"segment_pre_download": {
+			"segment_timeout": 5,
+			"segment_attempts": 5,
+			"headers": { 
+				"Referer": "{base_url}" 
+			}
+		},
+		"segment_post_download": {
+			"remove_front_bytes": 0,
+			"remove_back_bytes": 0
 		},
 		"method": {
 			"type": "index",

@@ -4,8 +4,16 @@
 	"mirrors": ["https://www.aether.cx/"],
 	"uses_cloudflare": false,
 	"download": {
-		"preprocessing": {
-			"remove_bytes": 8
+		"segment_pre_download": {
+			"segment_timeout": 5,
+			"segment_attempts": 5,
+			"headers": { 
+				"Referer": "{base_url}" 
+			}
+		},
+		"segment_post_download": {
+			"remove_front_bytes": 8,
+			"remove_back_bytes": 0
 		},
 		"method": {
 			"type": "master",
