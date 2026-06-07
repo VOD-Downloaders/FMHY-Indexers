@@ -12,10 +12,11 @@ permissions:
 
 env:
   INDEXERS_PATTERN: v0.1/*.json
-  INDEXERS_REPORT: indexers_report.md
-  INDEXERS_TITLE: indexers_title.txt
+  ISSUE_REPORT: issue_report.md
+  ISSUE_TITLE: issue_title.txt
   PR_REPORT: pullrequest_report.md
   PR_TITLE: pullrequest_title.txt
+  PR_BRANCH: chore/update-indexers
 
 jobs:
   check:
@@ -36,18 +37,18 @@ jobs:
         run: python scripts/check_indexers.py
 
       - name: Open issue (if necessary)
-        if: hashFiles(env.INDEXERS_REPORT) != ''
+        if: hashFiles(env.ISSUE_REPORT) != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          title=$(cat "$INDEXERS_TITLE")
+          title=$(cat "$ISSUE_TITLE")
           existing=$(gh issue list --state open --label automated-indexer-health --json number --jq '.[0].number // empty')
           if [ -n "$existing" ]; then
             gh issue edit "$existing" --title "$title"
-            gh issue comment "$existing" --body-file "$INDEXERS_REPORT"
+            gh issue comment "$existing" --body-file "$ISSUE_REPORT"
             echo "Updated issue #$existing"
           else
-            gh issue create --title "$title" --label indexer-health --body-file "$INDEXERS_REPORT"
+            gh issue create --title "$title" --label indexer-health --body-file "$ISSUE_REPORT"
             echo "Opened issue: $title"
           fi
 
@@ -58,7 +59,7 @@ jobs:
       - name: Open PR (if necessary)
         uses: peter-evans/create-pull-request@v8
         with:
-          branch: chore/update-indexers
+          branch: ${{ env.PR_BRANCH }}
           title: ${{ steps.prtitle.outputs.title }}
           commit-message: "Update redirected indexer domains"
           add-paths: ${{ env.INDEXERS_PATTERN }}

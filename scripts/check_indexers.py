@@ -6,6 +6,10 @@ import glob
 import json
 import time
 import datetime
+from dataclasses import dataclass
+from typing import Any
+from typing import ClassVar
+from typing import TypedDict
 from urllib.parse import urlparse
 
 import requests
@@ -14,8 +18,8 @@ import requests
 # Configuration
 #####################################################
 INDEXERS_PATTERN = os.environ.get("INDEXERS_PATTERN", "v0.1/*.json")
-REPORT_PATH      = os.environ.get("INDEXERS_REPORT",  "indexers_report.md")
-TITLE_PATH       = os.environ.get("INDEXERS_TITLE",   "indexers_title.txt")
+ISSUE_BODY_PATH  = os.environ.get("ISSUE_REPORT",     "issue_report.md")
+ISSUE_TITLE_PATH = os.environ.get("ISSUE_TITLE",      "issue_title.txt")
 PR_BODY_PATH     = os.environ.get("PR_REPORT",        "pullrequest_report.md")
 PR_TITLE_PATH    = os.environ.get("PR_TITLE",         "pullrequest_title.txt")
 
@@ -23,7 +27,7 @@ TIMEOUT, RETRIES = 15, 3
 HEADERS = {
     "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36")
 }
-ALIVE_BUT_REFUSING = {401, 403, 407, 429, 503}  # answered, just won't let the bot through
+ALIVE_BUT_REFUSING = {401, 403, 407, 429, 503} # answered, just won't let the bot through
 
 STATUS_DESC = {
     "live":        "alive",
@@ -35,17 +39,42 @@ STATUS_DESC = {
 }
 
 #####################################################
+# Types
+#####################################################
+@dataclass(frozen=True)
+class Live:        label: ClassVar[str] = "alive"
+@dataclass(frozen=True)
+class Blocked:     label: ClassVar[str] = "alive (challenge / 403)"
+@dataclass(frozen=True)
+class Down:        label: ClassVar[str] = "down (repeated 5xx or timeouts (could be temporary))"
+@dataclass(frozen=True)
+class Unreachable: label: ClassVar[str] = "unreachable (DNS / connection / TLS failure (domain looks gone))"
+
+@dataclass(frozen=True)
+class Missing:
+    url: str
+    label: ClassVar[str] = "missing, but answering (root returned 404/410)"
+
+@dataclass(frozen=True)
+class Moved:
+    url: str
+    label: ClassVar[str] = "redirected"
+
+UrlResult = Live | Blocked | Missing | Down | Unreachable | Moved
+JsonDict = dict[str, Any]
+
+#####################################################
 # Helpers
 #####################################################
-def remove_www_from_url(url):
+def remove_www_from_url(url: str) -> str:
     h = urlparse(url).netloc.lower()
     return h[4:] if h.startswith("www.") else h
 
-def url_to_string(url):
+def url_to_string(url: str) -> str:
     p = urlparse(url)
     return f"{p.scheme}://{p.netloc}/"
 
-def write_indexer_specification(path, cfg):
+def write_indexer_specification(path: str, cfg: JsonDict) -> None:
     with open(path, "w") as f:
         json.dump(cfg, f, indent="\t")
         f.write("\n")
@@ -53,150 +82,165 @@ def write_indexer_specification(path, cfg):
 #####################################################
 # Functions
 #####################################################
-def test_url(url):
+def test_url(url: str) -> UrlResult:
     for attempt in range(RETRIES):
         try:
             response = requests.get(url, headers=HEADERS, timeout=TIMEOUT, allow_redirects=True)
         except requests.Timeout:
-            time.sleep(2 * (attempt + 1))
-            continue
-        except requests.ConnectionError:
-            return ("unreachable", None)
-        except requests.RequestException:
-            return ("unreachable", None)
-
-        code = response.status_code
-        if code in ALIVE_BUT_REFUSING: # != dead
-            return ("blocked", response.url)
-        if code in (404, 410): # answering, root gone
-            return ("missing", response.url)
-        if code >= 500: # transient
             time.sleep(2 * (attempt + 1)) 
             continue
-        if code >= 400: # missing
-            return ("missing", response.url)
+        except requests.RequestException: # ConnectionError/SSL included
+            return Unreachable()
 
-        # moved or live
-        return ("moved" if remove_www_from_url(response.url) != remove_www_from_url(url) else "live", response.url)
-
-    return ("down", None) # failed after retries or timed out
+        code = response.status_code
+        if code in ALIVE_BUT_REFUSING:
+            return Blocked()
+        if code in (404, 410) or code >= 400:
+            return Missing(response.url)
+        if code >= 500:
+            time.sleep(2 * (attempt + 1)) 
+            continue
+        if remove_www_from_url(response.url) != remove_www_from_url(url):
+            return Moved(response.url)
+        return Live()
+    return Down()
 
 #####################################################
 # Report
 #####################################################
-def write_report(problems):
-    """Issue body: the indexers that could not be fixed automatically."""
-    now = datetime.datetime.now(datetime.timezone.utc)
-    lines = [
-        "## 🔧 Indexer health check — manual attention needed", "",
-        f"_Generated {now:%Y-%m-%d %H:%M UTC}_", "",
-        "Redirects and working-mirror swaps are handled automatically via PR. "
-        "The indexers below could **not** be fixed safely and need a human.", "",
+def write_issue_report(problems: list[str]) -> None:
+    now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
+
+    lines: list[str] = [
+        "# Indexer health check", 
+        "",
+        f"_Generated {now:%Y-%m-%d %H:%M UTC}_", 
+        "",
+        "## Overview",
+        "Redirects and working-mirror swaps are handled automatically via PR.",
+        "The indexers below could **not** be fixed safely and need a human.", 
+        "",
+        "## Issues",
     ]
-    for p in problems:
-        lines.append(f"### {p['name']} — `{p['path']}`")
-        lines.append(f"- Primary `{p['url']}` → **{STATUS_DESC[p['status']]}**")
-        if p["mirrors"] is not None:              # only set for the dead-no-mirror case
-            if p["mirrors"]:
-                tried = ", ".join(f"`{u}` ({STATUS_DESC.get(st, st)})" for u, st in p["mirrors"])
-                lines.append(f"- Mirrors tried: {tried}")
-            else:
-                lines.append("- No mirrors configured.")
-            lines.append("- → No working mirror found; set a new domain manually.")
-        lines.append("")
-    with open(REPORT_PATH, "w") as f:
+
+    for problem in problems:
+        lines.append(f"- {problem}")
+
+    lines = lines + [
+        "",
+        "## Disclaimer",
+        "This issue is generated by a bot and may contain mistakes."
+    ]
+    
+    with open(ISSUE_BODY_PATH, "w") as f:
         f.write("\n".join(lines))
 
-def write_pr_body(fixes):
-    """PR body: the config rewrites that were applied. Always written."""
-    lines = ["## Automated indexer domain updates", ""]
-    if fixes:
-        lines += ["The health check rewrote these config files:", ""]
-        lines += [f"- {fix}" for fix in fixes]
-    else:
-        lines += ["_No changes this run._"]
-    lines += ["", "⚠️ Review the diff before merging — redirects from dead domains "
-                  "can point at parked or malicious pages."]
+def write_pr_report(fixes: list[str]) -> None:
+    now: datetime.datetime = datetime.datetime.now(datetime.timezone.utc)
+    
+    lines: list[str] = [
+        "# Indexer fixes", 
+        "",
+        f"_Generated {now:%Y-%m-%d %H:%M UTC}_", 
+        "",
+        "## Overview",
+        f"Automatically fixed {len(fixes)} indexer issues.",
+        "The fixes are listed below:",
+        "",
+        "## Fixes",
+    ]
+
+    for fix in fixes:
+        lines.append(f"- {fix}")
+
+    lines = lines + [
+        "",
+        "## Disclaimer",
+        "This pull request is generated by a bot and may contain mistakes."
+    ]
+    
     with open(PR_BODY_PATH, "w") as f:
         f.write("\n".join(lines) + "\n")
 
 #####################################################
 # Main
 #####################################################
-def main():
-    problems, fixes = [], []
+def main() -> None:
+    problems: list[str] = []
+    fixes: list[str] = []
 
-    for cfg_path in sorted(glob.glob(INDEXERS_PATTERN)):
-        with open(cfg_path) as f:
-            cfg = json.load(f)
-        name = cfg.get("name", cfg_path)
-        status, final = test_url(cfg["url"])
+    # Test all indexers
+    for indexer_path in sorted(glob.glob(INDEXERS_PATTERN)):
+        with open(indexer_path) as file:
+            json_body: JsonDict = json.load(file)
 
-        if status in ("live", "blocked"):
-            continue                                              # alive, leave it
+        name: str = json_body.get("name", indexer_path)
+        urls: list[str] = [json_body.get("url", "")] + [mirror for mirror in json_body.get("mirrors", [])]
 
-        if status == "moved":                                     # -> PR
-            old = cfg["url"]
-            new_url = (final)
-            cfg["mirrors"] = [old] + [m for m in cfg.get("mirrors", [])
-                                      if url_to_string(m) != new_url]
-            cfg["url"] = new_url
-            write_indexer_specification(cfg_path, cfg)
-            fixes.append(f"**{name}** (`{cfg_path}`): redirected `{old}` → `{new_url}` "
-                         "— old domain moved into `mirrors`.")
-            continue
+        indexer_problems: list[str] = []
+        indexer_fixes: list[str] = []
 
-        if status in ("missing", "down"):                         # -> issue
-            problems.append({"name": name, "path": cfg_path, "url": cfg["url"],
-                             "status": status, "mirrors": None})
-            continue
+        # Test all urls
+        for i, url in enumerate(urls):
+            match test_url(url):
+                case Live() | Blocked():
+                    continue
 
-        # status == "unreachable": try to promote a working mirror
-        mirror_results, promoted = [], None
-        for m in cfg.get("mirrors", []):
-            st, fin = test_url(m)
-            mirror_results.append((m, st))
-            if st in ("live", "moved", "blocked"):
-                promoted = url_to_string(fin if st == "moved" else m)
-                break
-        if promoted:                                              # -> PR
-            old = cfg["url"]
-            cfg["mirrors"] = [old] + [x for x in cfg.get("mirrors", [])
-                                      if url_to_string(x) != promoted]
-            cfg["url"] = promoted
-            write_indexer_specification(cfg_path, cfg)
-            fixes.append(f"**{name}** (`{cfg_path}`): primary `{old}` unreachable "
-                         f"→ promoted mirror `{promoted}`.")
-        else:                                                     # -> issue
-            problems.append({"name": name, "path": cfg_path, "url": cfg["url"],
-                             "status": status, "mirrors": mirror_results})
+                case Moved(url=new):
+                    old_url: str = url
+                    new_url: str = url_to_string(new)
 
-    for line in fixes:
-        print("FIX:", line)
+                    urls[i] = new_url
 
-    # PR files: always written so the workflow's body-path / title read resolve.
-    write_pr_body(fixes)
-    n = len(fixes)
-    pr_title = (f"[Chore] Update {n} indexer domain{'s' if n != 1 else ''}"
-                if fixes else "[Chore] No indexer changes")
+                    write_indexer_specification(indexer_path, json_body)
+
+                    indexer_fixes.append(f"**{name}** (`{indexer_path}`): redirected \"{old_url}\" → \"{new_url}\".")
+
+                case Missing():
+                    indexer_problems.append(f"**{name}** (`{indexer_path}`): \"{url}\" is missing (404).")
+
+                case Down():
+                    indexer_problems.append(f"**{name}** (`{indexer_path}`): \"{url}\" is (temporarily) down.")
+
+                case Unreachable():
+                    if len(urls) != 1:
+                        urls.pop(i)
+                        indexer_fixes.append(f"**{name}** (`{indexer_path}`): \"{url}\" is unreachable, removed and swapped by mirror.")
+                    else:
+                        indexer_fixes = []
+                        indexer_problems = [f"**{name}** (`{indexer_path}`): All urls are unreachable."]
+
+        # If not all are unreachable write to file
+        if len(urls) != 0:
+            json_body["url"] = urls[0]
+            urls.pop(0)
+            json_body["mirrors"] = urls
+            write_indexer_specification(indexer_path, json_body)
+
+        problems = problems + indexer_problems
+        fixes = fixes + indexer_fixes
+
+    for problem in problems:
+        print("PROBLEM:", problem)
+    for fix in fixes:
+        print("FIX:", fix)
+
+    # PR files
+    pr_title: str = (f"[Chore] Update {len(fixes)} indexer domain{'s.' if len(fixes) != 1 else '.'}")
     with open(PR_TITLE_PATH, "w") as f:
         f.write(pr_title)
 
-    # Issue files: only written when something actually needs a human.
+    write_pr_report(fixes)
+
+    # Issue files
     if problems:
-        names = sorted({p["name"] for p in problems})
-        subjects = (", ".join(names) if len(names) <= 3
-                    else ", ".join(names[:3]) + f" +{len(names) - 3} more")
-        issue_title = f"🔧 Indexer health: {subjects} need attention"
-        with open(TITLE_PATH, "w") as f:
+        issue_title: str = f"[Issue] {len(problems)} indexer{'s' if len(problems) != 1 else ''} need attention."
+        with open(ISSUE_TITLE_PATH, "w") as f:
             f.write(issue_title)
-        write_report(problems)
-        print(f"{len(problems)} indexer(s) need manual attention — report + title written.")
-    else:
-        print("Nothing needs manual attention.")
+
+        write_issue_report(problems)
 
     sys.exit(0)
-
 
 if __name__ == "__main__":
     main()
