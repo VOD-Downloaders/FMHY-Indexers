@@ -1,6 +1,6 @@
 name: Indexer Issue
 description: An issue with an indexer specification
-title: "[Indexer] "
+title: "[Issue] XYZ"
 labels: ["indexer-health"]
 assignees:
   - ggjorven
