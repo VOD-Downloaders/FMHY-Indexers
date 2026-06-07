@@ -23,4 +23,4 @@ body:
     attributes:
       label: How to fix this?
       description: If you know, please explain how to fix the issue with the indexer.
-      value: "Indexer XYZ changed it's domain from X to Y, so change url to Y."
+      placeholder: Tell us how to fix this (if you can).
