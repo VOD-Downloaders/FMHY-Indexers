@@ -30,8 +30,6 @@ jobs:
 
       - name: Run detection script
         run: python scripts/check_indexers.py
-        env:
-          INDEXERS_PATTERN: {{ env.INDEXERS_PATTERN }}
 
       - name: Open issue (if necessary)
         if: hashFiles('attention_report.md') != ''
