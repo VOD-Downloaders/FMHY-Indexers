@@ -181,6 +181,7 @@ def main() -> None:
         indexer_fixes: list[str] = []
 
         # Test all urls
+        changed = False
         for i, url in enumerate(urls):
             match test_url(url):
                 case Live() | Blocked():
@@ -191,10 +192,9 @@ def main() -> None:
                     new_url: str = url_to_string(new)
 
                     urls[i] = new_url
-
-                    write_indexer_specification(indexer_path, json_body)
-
+                    
                     indexer_fixes.append(f"**{name}** (`{indexer_path}`): redirected \"{old_url}\" → \"{new_url}\".")
+                    changed = True
 
                 case Missing():
                     indexer_problems.append(f"**{name}** (`{indexer_path}`): \"{url}\" is missing (404).")
@@ -205,13 +205,15 @@ def main() -> None:
                 case Unreachable():
                     if len(urls) != 1:
                         urls.pop(i)
+                        changed = True
                         indexer_fixes.append(f"**{name}** (`{indexer_path}`): \"{url}\" is unreachable, removed and swapped by mirror.")
                     else:
                         indexer_fixes = []
                         indexer_problems = [f"**{name}** (`{indexer_path}`): All urls are unreachable."]
+                        changed = False
 
         # If not all are unreachable write to file
-        if len(urls) != 0:
+        if changed and len(urls) != 0:
             json_body["url"] = urls[0]
             urls.pop(0)
             json_body["mirrors"] = urls

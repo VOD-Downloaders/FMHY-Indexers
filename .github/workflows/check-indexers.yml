@@ -48,7 +48,7 @@ jobs:
             gh issue comment "$existing" --body-file "$ISSUE_REPORT"
             echo "Updated issue #$existing"
           else
-            gh issue create --title "$title" --label indexer-health --body-file "$ISSUE_REPORT"
+            gh issue create --title "$title" --label automated-indexer-health --body-file "$ISSUE_REPORT"
             echo "Opened issue: $title"
           fi
 
@@ -62,6 +62,9 @@ jobs:
           branch: ${{ env.PR_BRANCH }}
           title: ${{ steps.prtitle.outputs.title }}
           commit-message: "Update redirected indexer domains"
+          labels: automated-indexer-health
+          assignees: ggjorven
+          reviewers: ggjorven
           add-paths: ${{ env.INDEXERS_PATTERN }}
           body-path: ${{ env.PR_REPORT }}
           delete-branch: true
