@@ -1,7 +1,7 @@
 {
 	"name": "Aether",
-	"url": "https://www.aether.bar/",
-	"mirrors": ["https://www.aether.cx/"],
+	"url": "https://aether.bar/",
+	"mirrors": ["https://aether.cx/"],
 	"uses_cloudflare": false,
 	"download": {
 		"segment_pre_download": {
