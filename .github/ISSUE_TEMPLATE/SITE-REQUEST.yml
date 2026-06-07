@@ -28,8 +28,8 @@ body:
       label: Does the site use cloudflare protection?
       description: Does the site show a cloudflare protection page when you open it?
       options:
-        - Yes
-        - No
+        - "Yes"
+        - "No"
     validations:
       required: true
   - type: textarea
