@@ -1,0 +1,40 @@
+name: Site Request
+description: A request for a new indexer
+title: "[Request] Indexer XYZ"
+labels: ["indexer-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to enhance this project!
+  - type: textarea
+    id: site
+    attributes:
+      label: What site do you want?
+      description: Also tell us, what mirrors are there?
+      placeholder: Tell us the site and mirror sites.
+      value: "I would like to request an indexer for https://example.com, related mirrors are ..."
+    validations:
+      required: true
+  - type: textarea
+    id: what-type
+    attributes:
+      label: How does the site operate?
+      description: If you know, please explain how to intercept a stream and how to search through their catalog.
+      placeholder: Tell us how to intercept a stream and search through their catalog.
+  - type: dropdown
+    id: security
+    attributes:
+      label: Does the site use cloudflare protection?
+      description: Does the site show a cloudflare protection page when you open it?
+      options:
+        - Yes
+        - No
+    validations:
+      required: true
+  - type: textarea
+    id: anything-more
+    attributes:
+      label: Anything more?
+      description: Is there any more you wish to share about this site?
+      placeholder: Tell us if there are more things we need to know.
