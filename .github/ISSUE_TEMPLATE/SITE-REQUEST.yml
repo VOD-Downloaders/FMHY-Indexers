@@ -21,7 +21,7 @@ body:
     attributes:
       label: How does the site operate?
       description: If you know, please explain how to intercept a stream and how to search through their catalog.
-      placeholder: Tell us how to intercept a stream and search through their catalog.
+      placeholder: Tell us how to intercept a stream and search through their catalog (if you can).
   - type: dropdown
     id: security
     attributes:
