@@ -1,14 +1,14 @@
 {
 	"name": "Aether",
-	"url": "https://www.aether.bar/",
-	"mirrors": ["https://www.aether.cx/"],
+	"url": "https://www.aether.cx/",
+	"mirrors": [],
 	"uses_cloudflare": false,
 	"download": {
 		"segment_pre_download": {
 			"segment_timeout": 5,
 			"segment_attempts": 5,
-			"headers": { 
-				"Referer": "{base_url}" 
+			"headers": {
+				"Referer": "{base_url}"
 			}
 		},
 		"segment_post_download": {
