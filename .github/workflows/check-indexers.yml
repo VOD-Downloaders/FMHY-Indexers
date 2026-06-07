@@ -41,7 +41,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           title=$(cat "$INDEXERS_TITLE")
-          existing=$(gh issue list --state open --label indexer-health --json number --jq '.[0].number // empty')
+          existing=$(gh issue list --state open --label automated-indexer-health --json number --jq '.[0].number // empty')
           if [ -n "$existing" ]; then
             gh issue edit "$existing" --title "$title"
             gh issue comment "$existing" --body-file "$INDEXERS_REPORT"
