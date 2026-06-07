@@ -17,6 +17,8 @@ env:
   PR_REPORT: pullrequest_report.md
   PR_TITLE: pullrequest_title.txt
   PR_BRANCH: chore/update-indexers
+  ASSIGNEE: ggjorven
+  LABEL: automated-indexer-health
 
 jobs:
   check:
@@ -42,13 +44,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           title=$(cat "$ISSUE_TITLE")
-          existing=$(gh issue list --state open --label automated-indexer-health --json number --jq '.[0].number // empty')
+          existing=$(gh issue list --state open --label "$LABEL" --json number --jq '.[0].number // empty')
           if [ -n "$existing" ]; then
             gh issue edit "$existing" --title "$title"
             gh issue comment "$existing" --body-file "$ISSUE_REPORT"
             echo "Updated issue #$existing"
           else
-            gh issue create --title "$title" --label automated-indexer-health --body-file "$ISSUE_REPORT"
+            gh issue create --title "$title" --label "$LABEL" --assignee "$ASSIGNEE" --body-file "$ISSUE_REPORT"
             echo "Opened issue: $title"
           fi
 
@@ -62,9 +64,9 @@ jobs:
           branch: ${{ env.PR_BRANCH }}
           title: ${{ steps.prtitle.outputs.title }}
           commit-message: "Update redirected indexer domains"
-          labels: automated-indexer-health
-          assignees: ggjorven
-          reviewers: ggjorven
+          labels: ${{ env.LABEL }}
+          assignees: ${{ env.ASSIGNEE }}
+          reviewers: ${{ env.ASSIGNEE }}
           add-paths: ${{ env.INDEXERS_PATTERN }}
           body-path: ${{ env.PR_REPORT }}
           delete-branch: true
