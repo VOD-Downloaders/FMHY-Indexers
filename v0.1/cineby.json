@@ -1,14 +1,18 @@
 {
 	"name": "Cineby",
-	"url": "https://www.cineby.sc/",
-	"mirrors": ["https://www.cineplay.to/", "https://www.fmovies.nz/"],
+	"url": "https://www.cineby.at/",
+	"mirrors": [
+		"https://www.cineby.sc/",
+		"https://www.cineplay.to/",
+		"https://www.fmovies.nz/"
+	],
 	"uses_cloudflare": false,
 	"download": {
 		"segment_pre_download": {
 			"segment_timeout": 5,
 			"segment_attempts": 5,
-			"headers": { 
-				"Referer": "{base_url}" 
+			"headers": {
+				"Referer": "{base_url}"
 			}
 		},
 		"segment_post_download": {
