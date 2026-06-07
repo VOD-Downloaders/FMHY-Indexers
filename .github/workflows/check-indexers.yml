@@ -1,0 +1,65 @@
+name: Check indexers
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+env:
+  INDEXERS_PATTERN: v0.1/*.json
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run detection script
+        run: python scripts/check_indexers.py
+        env:
+          INDEXERS_PATTERN: {{ env.INDEXERS_PATTERN }}
+
+      - name: Open issue (if necessary)
+        if: hashFiles('attention_report.md') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create indexer-health --color FBCA04 \
+            --description "Automated indexer health check" --force >/dev/null 2>&1 || true
+          existing=$(gh issue list --state open --label indexer-health \
+            --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file attention_report.md
+            echo "Commented on existing issue #$existing"
+          else
+            gh issue create \
+              --title "🔧 Indexer health: manual attention needed" \
+              --label indexer-health \
+              --body-file attention_report.md
+          fi
+
+      - name: Open PR (if necessary)
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: chore/update-indexers
+          title: "[Chore] Update redirected indexer domains."
+          commit-message: "Update redirected indexer domains"
+          add-paths: ${{ env.INDEXERS_PATTERN }}
+          body: |
+            Automated domain-move detection. Review the diff before merging —
+            redirects from dead domains can point at parked/malicious pages.
+          delete-branch: true
