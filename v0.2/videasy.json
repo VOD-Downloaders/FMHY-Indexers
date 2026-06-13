@@ -18,7 +18,7 @@
 			"segment_timeout": 5,
 			"segment_attempts": 5,
 			"headers": {
-				"Referer": "{base_url}"
+				"Referer": "https://player.videasy.to/"
 			}
 		},
 		"segment_post_download": {
