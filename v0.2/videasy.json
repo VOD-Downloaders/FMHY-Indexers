@@ -1,0 +1,29 @@
+{
+	"name": "Videasy",
+	"servers": [
+		"Neon",
+		"Yoru",
+		"Cypher",
+		"Sage",
+		"Breach",
+		"Vyse",
+		"Killjoy",
+		"Fade",
+		"Omen",
+		"Raze"
+	],
+	"uses_cloudflare": false,
+	"download": {
+		"segment_download": {
+			"segment_timeout": 5,
+			"segment_attempts": 5,
+			"headers": {
+				"Referer": "{base_url}"
+			}
+		},
+		"segment_post_download": {
+			"remove_front_bytes": 8,
+			"remove_back_bytes": 0
+		},
+	}
+}
