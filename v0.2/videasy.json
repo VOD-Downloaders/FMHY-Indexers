@@ -22,7 +22,7 @@
 			}
 		},
 		"segment_post_download": {
-			"remove_front_bytes": 8,
+			"remove_front_bytes": 0,
 			"remove_back_bytes": 0
 		},
 	}
