@@ -52,14 +52,19 @@
 			"search_url": "https://api.videasy.to/superflix/sources-with-title"
 		}
 	],
-	"search_settings": {
+	"uses_cloudflare": false,
+	"search": {
 		"emulate_url": "https://videasy.net/",
 		"headers": {
 			"Referer": "https://videasy.net/"
 		}
 	},
-	"uses_cloudflare": false,
-	"stream_return_type": "index",
+	"stream": {
+		"type": "index",
+		"headers": {
+			"Referer": "https://player.videasy.net/"
+		}
+	},
 	"download": {
 		"segment_download": {
 			"segment_timeout": 5,
