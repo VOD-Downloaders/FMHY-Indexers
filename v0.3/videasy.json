@@ -54,15 +54,15 @@
 	],
 	"uses_cloudflare": false,
 	"search": {
-		"emulate_url": "https://videasy.net/",
+		"emulate_url": "https://player.videasy.to/",
 		"headers": {
-			"Referer": "https://videasy.net/"
+			"Referer": "https://player.videasy.to/"
 		}
 	},
 	"stream": {
 		"type": "index",
 		"headers": {
-			"Referer": "https://player.videasy.net/"
+			"Referer": "https://player.videasy.to/"
 		}
 	},
 	"download": {
