@@ -1,5 +1,6 @@
 {
 	"name": "Videasy",
+	"algorithm_name": "videasy",
 	"server_list": [
 		{
 			"name": "Neon",
