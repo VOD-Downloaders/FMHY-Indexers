@@ -7,7 +7,7 @@ A central collection of all supported [freemediaheckyeah](https://fmhy.net/video
 This repository contains indexer specifications for multiple [freemediaheckyeah](https://fmhy.net/video) sites and is expanding with each release.  
 The indexer specification files are under the `vX.X` folder corresponding with that version of [FMHY-Downloader](https://github.com/VOD-Downloaders/FMHY-Downloader). This way of saving specifications allows for better backwards compatibility.
 
-Latest indexers: [`v0.2`](./v0.2)
+Latest indexers: [`v0.3`](./v0.3)
 
 ## How to create an indexer
 
@@ -15,7 +15,7 @@ An indexer is a single JSON file describing one site and how [FMHY-Downloader](h
 
 ### Steps
 
-1. Copy an existing indexer (e.g. [`v0.2/videasy.json`](./v0.2/videasy.json)) as a starting point.
+1. Copy an existing indexer (e.g. [`v0.3/videasy.json`](./v0.3/videasy.json)) as a starting point.
 2. Name the file after the site in lowercase (e.g. `vidking.json`).
 3. Fill in the fields below.
 4. Verify the indexer works with [FMHY-Downloader](https://github.com/VOD-Downloaders/FMHY-Downloader).
@@ -27,23 +27,45 @@ An indexer is a single JSON file describing one site and how [FMHY-Downloader](h
     // Display name of the site.
     "name": "Videasy",
 
-    // Different server names of the backend.
-    "servers": [
-		"Neon",
-		"Yoru",
-		"Cypher",
-		"Sage",
-		"Breach",
-		"Vyse",
-		"Killjoy",
-		"Fade",
-		"Omen",
-		"Raze"
-	],
-
+    // Different server names of the backend. All use the same decryption logic
+    "server_list": [
+		{
+		    // Name of a server 
+			"name": "Neon",
+			// Description of the server
+			"description": "Best server for both movies and series.",
+			// The url to send the requests to 
+			"search_url": "https://api.videasy.to/mb-flix/sources-with-title",
+			// Extra headers to send with the request specific to this server
+			"headers": null,
+		}
+		
+    ],
+	
     // Whether the site is protected by Cloudflare. Affects how requests are made.
     "uses_cloudflare": false,
 
+    // Search settings
+    "search": {
+	    // The URL the browser will pretend the requests are coming from
+		"emulate_url": "https://player.videasy.to/",
+		// Extra headers to send with the requests
+		"headers": {
+			"Referer": "https://player.videasy.to/"
+		}
+	},
+	
+	// Stream retrieval settings
+	"stream": {
+	    // Steam video type that is returned ("index" or "mp4")
+		"type": "index",
+		// Extra headers to send with the stream reading requests
+		"headers": {
+			"Referer": "https://player.videasy.to/"
+		}
+	},
+
+    // Download settings
     "download": {
         // Settings applied while fetching each segment.
         "segment_download": {
@@ -67,7 +89,7 @@ An indexer is a single JSON file describing one site and how [FMHY-Downloader](h
 }
 ```
 
-> The spec is versioned: files under `v0.2` follow the `v0.2` standard. When the format changes, a new `vX.X` folder is created so older downloader versions keep working. Edit indexers in the latest version folder only.
+> The spec is versioned: files under `v0.3` follow the `v0.3` standard. When the format changes, a new `vX.X` folder is created so older downloader versions keep working. Edit indexers in the latest version folder only.
 
 ## Contributing
 
