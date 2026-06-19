@@ -1,0 +1,82 @@
+{
+	"name": "Videasy-2",
+	"algorithm_name": "videasy",
+	"server_list": [
+		{
+			"name": "Neon",
+			"description": "Best server for both movies and series.",
+			"search_url": "https://api2.videasy.to/mb-flix/sources-with-title"
+		},
+		{
+			"name": "Yoru",
+			"description": "Movies only, may have 4K.",
+			"search_url": "https://api2.videasy.to/cdn/sources-with-title"
+		},
+		{
+			"name": "Cypher",
+			"description": "General server for both movies and series.",
+			"search_url": "https://api2.videasy.to/downloader2/sources-with-title"
+		},
+		{
+			"name": "Sage",
+			"description": "General server for both movies and series.",
+			"search_url": "https://api2.videasy.to/1movies/sources-with-title"
+		},
+		{
+			"name": "Breach",
+			"description": "General server for both movies and series.",
+			"search_url": "https://api2.videasy.to/m4uhd/sources-with-title"
+		},
+		{
+			"name": "Vyse",
+			"description": "General server for both movies and series.",
+			"search_url": "https://api2.videasy.to/hdmovie/sources-with-title"
+		},
+		{
+			"name": "Killjoy",
+			"description": "German language server for both movies and series.",
+			"search_url": "https://api2.videasy.to/meine/sources-with-title"
+		},
+		{
+			"name": "Fade",
+			"description": "Hindi language server for both movies and series.",
+			"search_url": "https://api2.videasy.to/hdmovie/sources-with-title"
+		},
+		{
+			"name": "Omen",
+			"description": "Spanish language server for both movies and series.",
+			"search_url": "https://api2.videasy.to/lamovie/sources-with-title"
+		},
+		{
+			"name": "Raze",
+			"description": "Portuguese language server for both movies and series.",
+			"search_url": "https://api2.videasy.to/superflix/sources-with-title"
+		}
+	],
+	"uses_cloudflare": false,
+	"search": {
+		"emulate_url": "https://player.videasy.to/",
+		"headers": {
+			"Referer": "https://player.videasy.to/"
+		}
+	},
+	"stream": {
+		"type": "index",
+		"headers": {
+			"Referer": "https://player.videasy.to/"
+		}
+	},
+	"download": {
+		"segment_download": {
+			"segment_timeout": 5,
+			"segment_attempts": 5,
+			"headers": {
+				"Referer": "https://player.videasy.to/"
+			}
+		},
+		"segment_post_download": {
+			"remove_front_bytes": 0,
+			"remove_back_bytes": 0
+		}
+	}
+}
