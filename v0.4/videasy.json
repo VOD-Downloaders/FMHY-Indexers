@@ -1,0 +1,117 @@
+{
+	"name": "Videasy",
+	"algorithm_name": "videasy",
+	"server_list": [
+		{
+			"name": "Neon",
+			"description": "Best server for both movies and series.",
+			"search_url": "https://api.videasy.to/mb-flix/sources-with-title",
+			"type": null,
+			"headers": null
+		},
+		{
+			"name": "Yoru",
+			"description": "Movies only, may have 4K.",
+			"search_url": "https://api.videasy.to/cdn/sources-with-title",
+			"type": null,
+			"headers": null
+		},
+		{
+			"name": "Tejo",
+			"description": "General server for both movies and series",
+			"search_url": "https://api.videasy.to/tejo/sources-with-title",
+			"type": "video_audio",
+			"headers": null
+		},
+		{
+			"name": "Jett",
+			"description": "General server for both movies and series",
+			"search_url": "https://api.videasy.to/jett/sources-with-title",
+			"type": "video_audio",
+			"headers": null
+		},
+		{
+			"name": "Cypher",
+			"description": "General server for both movies and series.",
+			"search_url": "https://api.videasy.to/downloader2/sources-with-title",
+			"type": null,
+			"headers": null
+		},
+		{
+			"name": "Sage",
+			"description": "General server for both movies and series.",
+			"search_url": "https://api.videasy.to/1movies/sources-with-title",
+			"type": null,
+			"headers": null
+		},
+		{
+			"name": "Breach",
+			"description": "General server for both movies and series.",
+			"search_url": "https://api.videasy.to/m4uhd/sources-with-title",
+			"type": null,
+			"headers": null
+		},
+		{
+			"name": "Vyse",
+			"description": "General server for both movies and series.",
+			"search_url": "https://api.videasy.to/hdmovie/sources-with-title",
+			"type": null,
+			"headers": null
+		},
+		{
+			"name": "Killjoy",
+			"description": "German language server for both movies and series.",
+			"search_url": "https://api.videasy.to/meine/sources-with-title",
+			"type": null,
+			"headers": null
+		},
+		{
+			"name": "Fade",
+			"description": "Hindi language server for both movies and series.",
+			"search_url": "https://api.videasy.to/hdmovie/sources-with-title",
+			"type": null,
+			"headers": null
+		},
+		{
+			"name": "Omen",
+			"description": "Spanish language server for both movies and series.",
+			"search_url": "https://api.videasy.to/lamovie/sources-with-title",
+			"type": null,
+			"headers": null
+		},
+		{
+			"name": "Raze",
+			"description": "Portuguese language server for both movies and series.",
+			"search_url": "https://api.videasy.to/superflix/sources-with-title",
+			"type": null,
+			"headers": null
+		}
+	],
+	"uses_cloudflare": false,
+	"search": {
+		"emulate_url": "https://player.videasy.to/",
+		"headers": {
+			"Referer": "https://player.videasy.to/"
+		}
+	},
+	"stream": {
+		"type": "index",
+		"headers": {
+			"Referer": "https://player.videasy.to/"
+		}
+	},
+	"download": {
+		"max_requests": 25,
+		"segment_download": {
+			"segment_timeout": 5,
+			"segment_attempts": 5,
+			"headers": {
+				"Referer": "https://player.videasy.to/"
+			}
+		},
+		"segment_post_download": {
+			"remove_front_bytes": 0,
+			"remove_back_bytes": 0
+		}
+	}
+}
