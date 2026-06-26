@@ -102,6 +102,7 @@
 	},
 	"download": {
 		"max_requests": 25,
+		"order": "sequential",
 		"segment_download": {
 			"segment_timeout": 5,
 			"segment_attempts": 5,
