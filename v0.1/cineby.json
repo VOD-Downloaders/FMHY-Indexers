@@ -2,8 +2,7 @@
 	"name": "Cineby",
 	"url": "https://www.cineby.at/",
 	"mirrors": [
-		"https://cineplay.to/",
-		"https://fmovies.nz/"
+		"https://cineplay.to/"
 	],
 	"uses_cloudflare": false,
 	"download": {
