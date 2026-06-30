@@ -71,7 +71,6 @@
 		}
 	},
 	"stream": {
-		"type": "index",
 		"headers": {
 			"Referer": "https://player.videasy.to/"
 		}
