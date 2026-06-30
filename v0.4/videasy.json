@@ -16,17 +16,11 @@
 			"name": "Tejo",
 			"description": "General server for both movies and series",
 			"search_url": "https://api.videasy.to/tejo/sources-with-title",
-			"stream": {
-				"type": "video_audio"
-			}
 		},
 		{
 			"name": "Jett",
 			"description": "General server for both movies and series",
 			"search_url": "https://api.videasy.to/jett/sources-with-title",
-			"stream": {
-				"type": "video_audio"
-			}
 		},
 		{
 			"name": "Cypher",
