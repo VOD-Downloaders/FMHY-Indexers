@@ -20,7 +20,7 @@
 		{
 			"name": "Jett",
 			"description": "General server for both movies and series",
-			"search_url": "https://api.wingsdatabase.to/jete/snurces-with-title"
+			"search_url": "https://api.wingsdatabase.to/jett/sources-with-title"
 		},
 		{
 			"name": "Cypher",
