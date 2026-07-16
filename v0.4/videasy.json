@@ -5,62 +5,62 @@
 		{
 			"name": "Neon",
 			"description": "Best server for both movies and series.",
-			"search_url": "https://api.wingsdatabase.com/mb-flix/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/mb-flix/sources-with-title"
 		},
 		{
 			"name": "Yoru",
 			"description": "Movies only, may have 4K.",
-			"search_url": "https://api.wingsdatabase.com/cdn/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/cdn/sources-with-title"
 		},
 		{
 			"name": "Tejo",
 			"description": "General server for both movies and series",
-			"search_url": "https://api.wingsdatabase.com/tejo/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/tejo/sources-with-title"
 		},
 		{
 			"name": "Jett",
 			"description": "General server for both movies and series",
-			"search_url": "https://api.wingsdatabase.com/jett/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/jett/sources-with-title"
 		},
 		{
 			"name": "Cypher",
 			"description": "General server for both movies and series.",
-			"search_url": "https://api.wingsdatabase.com/downloader2/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/downloader2/sources-with-title"
 		},
 		{
 			"name": "Sage",
 			"description": "General server for both movies and series.",
-			"search_url": "https://api.wingsdatabase.com/1movies/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/1movies/sources-with-title"
 		},
 		{
 			"name": "Breach",
 			"description": "General server for both movies and series.",
-			"search_url": "https://api.wingsdatabase.com/m4uhd/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/m4uhd/sources-with-title"
 		},
 		{
 			"name": "Vyse",
 			"description": "General server for both movies and series.",
-			"search_url": "https://api.wingsdatabase.com/hdmovie/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/hdmovie/sources-with-title"
 		},
 		{
 			"name": "Killjoy",
 			"description": "German language server for both movies and series.",
-			"search_url": "https://api.wingsdatabase.com/meine/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/meine/sources-with-title"
 		},
 		{
 			"name": "Fade",
 			"description": "Hindi language server for both movies and series.",
-			"search_url": "https://api.wingsdatabase.com/hdmovie/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/hdmovie/sources-with-title"
 		},
 		{
 			"name": "Omen",
 			"description": "Spanish language server for both movies and series.",
-			"search_url": "https://api.wingsdatabase.com/lamovie/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/lamovie/sources-with-title"
 		},
 		{
 			"name": "Raze",
 			"description": "Portuguese language server for both movies and series.",
-			"search_url": "https://api.wingsdatabase.com/superflix/sources-with-title"
+			"search_url": "https://api.speedracerlight.com/superflix/sources-with-title"
 		}
 	],
 	"uses_cloudflare": false,
